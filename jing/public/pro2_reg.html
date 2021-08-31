@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script>
+
+		    
+			function login(){
+				var msg = document.getElementById("msg");
+				var ename = document.getElementById("ename");
+				//0.获取用户输入的信息
+				var _uname=uname.value;
+				var _upwd=upwd.value;
+				var _code = code.value;
+                if(!_code){
+					msg.innerHTML = "验证码不能为空！！";return;
+				}
+				if(!_uname){
+					msg.innerHTML = "用户名不能为空！！";return;
+				}
+				if(!_upwd){
+					msg.innerHTML = "密码不能为空！！";return;
+				}
+				//1.创建xhr异步对象
+				var xhr=new XMLHttpRequest();
+				//注意这一句:跨域访问ajax全指它
+				xhr.withCredentials = true;
+				//4.打开监听，接收响应
+				xhr.onreadystatechange=function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						var r=JSON.parse(xhr.responseText);
+						console.log(r);
+						if(r.code==-1){
+							msg.innerHTML= "验证码错误"
+						}else if(r.code==1){
+							msg.innerHTML = "注册成功";
+							//js跳转页面的写法
+							location.href="http://127.0.0.1:3000/user/pro2_login.html"
+						}else{
+							msg.innerHTML = "程序出错误";
+						}
+					}
+				}
+				//2.创建请求，打开连接
+				xhr.open("post",`/user/register`,true);
+				 xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    
+				//3.发送请求
+				xhr.send(`username=${_uname}&password=${_upwd}&code=${_code}`);
+			}
+		</script>
+	</head>
+
+		<body>
+		 <h1 id="msg" style="color:red;">&nbsp;</h1>
+		 <h1 id="ename" style="color:red;"></h1>	
+		 <input type="text" id="uname" value="dingding"><br>
+		
+		 <input type="text" id="upwd" value="123456"><br>
+		 <img src="http://127.0.0.1:3000/user/imgCode" id="code2" onclick="cha3()" title="看不清点击换一张"><br/>
+		 <input type="text" id="code" value="" >
+		 <button onclick="login()">用户注册</button>
+         <script>
+			 function cha3(){
+				 console.log(123);
+				 var code2 = document.getElementById("code2");
+				 code2.src = "http://127.0.0.1:3000/user/imgCode?t="+new Date().getTime();
+			 }
+		 </script>
+		</body>
+</html>
